@@ -114,6 +114,8 @@ def dodaj_biljku():
     #Tu sam dodala napravljen objekt i predala ga databazi kako bi ga upisala u databazu, jedan objekt = row podataka
     #Uz to i napravim neki flash message da korisnik zna da je uspjesno odradjeno
 
+    return render_template('Templates/dodaj_biljku.html', form=form)
+
 
 @app.route('/dodaj_vazu')
 def dodaj_vazu():
