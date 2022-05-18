@@ -73,14 +73,13 @@ class Form_za_vazu (FlaskForm):
     submit = SubmitField('Dodaj novu posudu')
 
 class Biljka_u_vazu (FlaskForm):
+    pass
 
 #end region
 
 #region rute
 
-@app.route('/popis_biljki')
-def popis_biljki():
-    pass
+
 
 
 @app.route('/popis_vaza')

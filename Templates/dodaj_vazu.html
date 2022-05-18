@@ -1,0 +1,33 @@
+% extends 'layout.html'
+
+{%block title%} Dodaj Vazu {%endblock%}
+
+
+{%block content%}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Biljke</a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+{%for biljka in Biljke%}   
+        <li><a class="dropdown-item" href="#!">{{biljka}}</a></li>
+        <li><hr class="dropdown-divider" /></li>
+
+
+{%endfor%}
+    </ul>
+</li>
+
+<form method="POST">
+    {{form.hidden_tag()}}
+    {{form.ime_vaze.label}}
+    {{form.ime_vaze}}
+    {{form.odabir_biljke.label}}
+    {{form.odabir_biljke}}
+
+
+    {{form.submit()}}
+
+</form>
+
+{%endblock%}
