@@ -1,0 +1,34 @@
+% extends 'layout.html'
+
+<form method="POST">
+    {{form.hidden_tag()}}
+    {{form.ime_biljke.label}}
+    {{form.ime_biljke}}
+    {{form.slika.label}}
+    {{form.slika}}
+    {{form.max_svjetlost.label}}
+    {{form.ime_biljke}}
+    {{form.ime_biljke.label}}
+    {{form.ime_biljke}}
+    {{form.ime_biljke.label}}
+    {{form.ime_biljke}}
+    {{form.ime_biljke.label}}
+    {{form.ime_biljke}}
+    {{form.ime_biljke.label}}
+    {{form.ime_biljke}}
+    {{form.ime_biljke.label}}
+    {{form.ime_biljke}}
+
+
+    ime_biljke = StringField('Ime Biljke')
+    slika = StringField('Dodaj fotografiju') #kako dodam fotografij??
+    max_svjetlost = FloatField('Maximalna količina svjetlosti')
+    min_svjetlost = FloatField('Minimalna količina svjetlosti')
+    max_ph = IntegerField('Maximalni pH')
+    min_ph = IntegerField('Minimalni pH')
+    max_vlaznost = IntegerField('Maximalni pH')
+    min_vlaznost = IntegerField('Minimalni pH')
+    max_temp = FloatField('Maximalna količina svjetlosti')
+    min_temp = FloatField('Minimalna količina svjetlosti')
+
+    submit = SubmitField('Dodaj novu biljku')

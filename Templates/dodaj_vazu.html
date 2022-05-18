@@ -1,0 +1,13 @@
+% extends 'layout.html'
+
+<form method="POST">
+    {{form.hidden_tag()}}
+    {{form.ime_vaze.label}}
+    {{form.ime_vaze}}
+    {{form.odabir_biljke.label}}
+    {{form.odabir_biljke}}
+
+
+    {{form.submit()}}
+
+</form>
