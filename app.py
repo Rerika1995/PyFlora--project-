@@ -1,5 +1,4 @@
 from ast import Pass
-from cgitb import html
 from crypt import methods
 from email.policy import default
 from enum import unique
@@ -74,11 +73,10 @@ class Form_za_vazu (FlaskForm):
     submit = SubmitField('Dodaj novu posudu')
 
 class Biljka_u_vazu (FlaskForm):
-    pass
 
-#endregion
+#end region
 
-
+#region rute
 
 @app.route('/popis_biljki')
 def popis_biljki():
@@ -119,7 +117,7 @@ def dodaj_biljku():
     return render_template('Templates/dodaj_biljku.html', form=form)
 
 
-@app.route('/dodaj_vazu', methods = ['GET' , 'POST'])
+@app.route('/dodaj_vazu')
 def dodaj_vazu():
     form = Form_za_vazu()
     
@@ -137,14 +135,11 @@ def dodaj_vazu():
     db.session.add(nova_vaza)
     db.session.commit()
     flash('Dodali ste vazu')
-    
-    return render_template('Templates/dodaj_vazu.html')
+    pass
+
 
 @app.route('/popis_vaza/dodaj_biljku')
 def dodaj_biljku_vazi():
     pass
 
-
-
-if __name__ =='__main__':
-    app.run(debug=True)
+#end region
