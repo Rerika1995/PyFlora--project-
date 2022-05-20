@@ -1,0 +1,28 @@
+% extends 'layout.html'
+
+{%block title%} Moj Profil {%endblock%}
+
+
+{%block content%}
+
+ISPISI USER i NAPISI ISOD ZA PROMJENU PROFILA:
+
+<form method="POST">
+    {{form.hidden_tag()}}
+    {{form.ime.label}}
+    {{form.ime}}
+    {{form.prezime.label}}
+    {{form.prezime}}
+    {{form.email.label}}
+    {{form.email}}
+    {{form.username.label}}
+    {{form.username}
+    {{form.password.label}}
+    {{form.password}}
+
+    {{form.submit()}}
+
+</form>
+
+
+{%endblock%}

@@ -1,5 +1,10 @@
 % extends 'layout.html'
 
+{%block title%} Dodaj Biljku {%endblock%}
+
+
+{%block content%}
+
 <form method="POST">
     {{form.hidden_tag()}}
     {{form.ime_biljke.label}}
@@ -26,3 +31,6 @@
     {{form.submit()}}
 
 </form>
+
+
+{%endblock%}
