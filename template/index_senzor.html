@@ -2,6 +2,7 @@
 
 {%block title%} Vaze {%endblock%}
 
+
 {%block content%}
 
 <div>
@@ -43,7 +44,7 @@
                                 {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
                             </p>
                             <p class="card-text">
-                                {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                                {{ TU POZOVI FUNKCIJU KOJA GENERIRA PODATKE i onda kreni usporedjivatt vrjedosti }}
                             </p>
                             <p class="card-text">
                                 {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
@@ -72,5 +73,38 @@
 {%endblock%}
 
 
+SREDI I KORISTI OVO: 
 
+for biljka in Vaze.biljka: 
+if biljka.max_svjetlost < light:  #provjeri da li se tako proziva
+    flash('Premjestite biljku na manje osvjetljeno mjesto')
+elif biljka.max_svjetlost > light:
+    print ('')
 
+elif biljka.min_svjetlost < light:  #provjeri da li se tako proziva
+    flash('Premjestite biljku na manje osvjetljeno mjesto')
+elif biljka.min_svjetlost > light:
+    print ('')
+else:
+    pass
+
+if biljka.ph < light:  #provjeri da li se tako proziva
+    print('Premjestite biljku na manje osvjetljeno mjesto')
+elif biljka.ph > light:
+    print ('')
+else:
+    pass
+
+if biljka.max_vlaznost < vlaznost:  #provjeri da li se tako proziva
+    print('Premjestite biljku na manje osvjetljeno mjesto')
+elif biljka.max_vlaznost > vlaznost:
+    print ('')
+else:
+    pass
+
+if biljka.min_vlaznost < vlaznost:  #provjeri da li se tako proziva
+    print('Premjestite biljku na manje osvjetljeno mjesto') #kako prikazem??
+elif biljka.min_vlaznost > vlaznost:
+    print ('')
+else:
+    pass

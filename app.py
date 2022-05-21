@@ -1,6 +1,4 @@
-from crypt import methods
-from doctest import ELLIPSIS_MARKER
-import email
+
 from flask import Flask, flash, session, render_template, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FloatField, IntegerField
@@ -108,7 +106,7 @@ class Biljka_u_vazu (FlaskForm):
 
 @app.route('/')
 def index():
-  return render_template('./template/index.html')
+  return render_template('index.html')
 
 @app.route('/profil', methods = ['GET' , 'POST'])  #da li ovo moze ovako i ako da, moram li koristiti methods tu?
 def profil():
@@ -187,7 +185,7 @@ def dodaj_biljku():
     #Tu sam dodala napravljen objekt i predala ga databazi kako bi ga upisala u databazu, jedan objekt = row podataka
     #Uz to i napravim neki flash message da korisnik zna da je uspjesno odradjeno
 
-    return render_template('template/dodaj_biljku.html', form=form, Biljke = Biljke)
+    return render_template('dodaj_biljku.html', form=form, Biljke = Biljke)
 
 
 @app.route('/dodaj_vazu', methods = ['GET', 'POST'])
@@ -208,62 +206,56 @@ def dodaj_vazu():
             ime_vaze=form.ime_vaze.data,
             id_biljke = odabir_biljke.id)
 
-    db.session.add(nova_vaza)
-    db.session.commit()
-    flash('Dodali ste vazu')
+        db.session.add(nova_vaza)
+        db.session.commit()
+        flash('Dodali ste vazu')
     
-    return render_template('.template/dodaj_vazu.html')
+    return render_template('dodaj_vazu.html')
 
 
 
 @app.route('/popis_vaza/dodaj_biljku')
 def dodaj_biljku_vazi():
+    pass
     
 
 
 #end region
 
-vlaznost = None
-ph = None
-light = None
-temp= None
+    for biljka in Vaze.biljka: 
+        if biljka.max_svjetlost < light:  #provjeri da li se tako proziva
+            flash('Premjestite biljku na manje osvjetljeno mjesto')
+        elif biljka.max_svjetlost > light:
+            print ('')
 
+        elif biljka.min_svjetlost < light:  #provjeri da li se tako proziva
+            flash('Premjestite biljku na manje osvjetljeno mjesto')
+        elif biljka.min_svjetlost > light:
+            print ('')
+        else:
+            pass
+        
+        if biljka.ph < light:  #provjeri da li se tako proziva
+            print('Premjestite biljku na manje osvjetljeno mjesto')
+        elif biljka.ph > light:
+            print ('')
+        else:
+            pass
 
-for biljka in Vaze.biljka: 
-    if biljka.max_svjetlost < light:  #provjeri da li se tako proziva
-        flash('Premjestite biljku na manje osvjetljeno mjesto')
-    elif biljka.max_svjetlost > light:
-        print ('')
+        if biljka.max_vlaznost < vlaznost:  #provjeri da li se tako proziva
+            print('Premjestite biljku na manje osvjetljeno mjesto')
+        elif biljka.max_vlaznost > vlaznost:
+            print ('')
+        else:
+            pass
 
-    elif biljka.min_svjetlost < light:  #provjeri da li se tako proziva
-        flash('Premjestite biljku na manje osvjetljeno mjesto')
-    elif biljka.min_svjetlost > light:
-        print ('')
-    else:
-        pass
-    
-    if biljka.ph < light:  #provjeri da li se tako proziva
-        print('Premjestite biljku na manje osvjetljeno mjesto')
-    elif biljka.ph > light:
-        print ('')
-    else:
-        pass
-
-    if biljka.max_vlaznost < vlaznost:  #provjeri da li se tako proziva
-        print('Premjestite biljku na manje osvjetljeno mjesto')
-    elif biljka.max_vlaznost > vlaznost:
-        print ('')
-    else:
-        pass
-
-    if biljka.min_vlaznost < vlaznost:  #provjeri da li se tako proziva
-        print('Premjestite biljku na manje osvjetljeno mjesto') #kako prikazem??
-    elif biljka.min_vlaznost > vlaznost:
-        print ('')
-    else:
-        pass
-
-    return render_template('template/dodaj_biljku.html')
+        if biljka.min_vlaznost < vlaznost:  #provjeri da li se tako proziva
+            print('Premjestite biljku na manje osvjetljeno mjesto') #kako prikazem??
+        elif biljka.min_vlaznost > vlaznost:
+            print ('')
+        else:
+            pass
+    return render_template('dodaj_biljku.html')
 
     
      
@@ -274,5 +266,5 @@ def Senzor_read(vlaznost, ph, light, temp, Biljke, Vaze):
 
 
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)

@@ -5,7 +5,18 @@
 
 {%block content%}
 
-ISPISI USER i NAPISI ISOD ZA PROMJENU PROFILA:
+<div class="card text-white bg-secondary my-5 py-4 text-center">
+    <div class="card-body">
+        <p class="lead text-white m-0">
+            <strong>
+                Ime i Prezime: {{user.name}} {{user.prezime}}
+            </strong><br>
+            username - {{ user.username }} &#8451;<br>
+            email - {{ user.email }} %<br>
+            password - {%for u in user.password: %}  {{u}} {%endfor%} <br>
+        </p>
+    </div>
+</div>
 
 <form method="POST">
     {{form.hidden_tag()}}
