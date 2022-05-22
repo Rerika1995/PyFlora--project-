@@ -4,70 +4,55 @@
 
 {%block content%}
 
-<div>
-    <a class="btn btn-info" href="{{ url_for('index_senzor') }}">
-        SYNC
-    </a>
-</div>
+    <div>
+        <a class="btn btn-info" href="{{ url_for('index_senzor') }}">
+            SYNC
+        </a>
+    </div>
+    <div>
+        <a class="btn btn-info" href="{{ url_for('dodaj_vazu') }}">
+            DODAJ NOVU VAZU
+        </a>
+    </div>
 
-{%for vaza in Vaze.query.limit(20).all()°%}
+    
 
-
-
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
-
-                    {%if vaza.biljka not null or vaza.biljka != ''%}
-                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
-                            <h2 class="card-title">PRIGODNO ZA {{ vaza.biljka.ime_biljke }}</h2>
-                            <p class="card-text">
-                                Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
-                            </p>
-                            <p class="card-text">
-                                pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
-                            </p>
-                            <p class="card-text">
-                                Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
-                            </p>
-                            <p class="card-text">
-                                Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
-                            </p>
-                        </div>
-
-                        <div class="card-body">
-                            <h2 class="card-title">ZADNJE OČITANO STANJE</h2>
-                            <p class="card-text">
-                                {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
-                            </p>
-                            <p class="card-text">
-                                {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
-                            </p>
-                            <p class="card-text">
-                                {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
-                            </p>
-                            <p class="card-text">
-                                {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
-                            </p>
-                </div>
+    {%for vaza in Vaze%}
 
 
 
-                    <div class="card-footer">
-                        <a class="btn btn-primary btn-sm" 
-                            href="{{ url_for('post_details', post_id=post['id']) }}">
-                            More Info
-                        </a>
-                    </div>
-                </div>
-            </div>
+                <div class="col-md-4 mb-5">
+                    <div class="card h-100">
+                        <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
 
+                        {%if vaza.biljka !=''%}
+                            <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+                            {%if vaza.biljka.ime_biljke != ''%}
+                                <div class="card-body">
+                                    <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
+                                    <h2 class="card-title">PRIGODNO ZA {{ vaza.biljka.ime_biljke }}</h2>
+                                    <p class="card-text">
+                                        Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
+                                    </p>
+                                    <p class="card-text">
+                                        pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                                    </p>
+                                    <p class="card-text">
+                                        Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
+                                    </p>
+                                    <p class="card-text">
+                                        Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                                    </p>
+                                </div>
+                            {%else%}
+                                <a class="btn btn-info" href="{{ url_for('dodaj_biljku_vazi') }}">
+                                    Dodaj biljku
+                                </a>
+                                
+                        {%endif%}{%endif%}
 
+    {%endfor%}
         
-
-{%endfor%}
 
 {%endblock%}
 

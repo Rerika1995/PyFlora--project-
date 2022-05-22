@@ -1,0 +1,31 @@
+{%extends 'layout.html'%}
+
+{%block title%} Vaze {%endblock%}
+
+{%block content%}
+
+    <div>
+        <a class="btn btn-info" href="{{ url_for('index_senzor') }}">
+            SYNC
+        </a>
+    </div>
+
+
+    {%for vaza in Vaze :%}
+
+    <div class="col-md-4 mb-5">
+        <div class="card h-100">
+            <h2 class="card-title">{{ vaza.id }}</h2>
+            <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
+            
+        </div>
+    </div>
+    
+    {%endfor%}
+            
+    
+{%endblock%}
+
+
+
+

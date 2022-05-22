@@ -1,11 +1,14 @@
 
-from flask import Flask, flash, session, render_template, url_for
+from flask import Flask, flash, session, render_template, url_for, jsonify
 from flask_wtf import FlaskForm
+import json
+from sqlalchemy import true
 from wtforms import StringField, SubmitField, FloatField, IntegerField
 from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
 from datetime import datetime 
 from flask_migrate import Migrate
+from Repository.data_creator import sensor_data
 #from Repository.user import CreateUser
 
 #User = CreateUser("Sara", "Jones", "sara.jones@gmail.com", "SaraJones", "MojaLozinka12345")
@@ -15,10 +18,14 @@ app = Flask(__name__, template_folder='template')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/biljke.sqlite'
 app.config['SECRET_KEY'] = 'tajni_kljuc'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TIMEOUT'] = 15
 
 moment = Moment(app) #izradimo objek iz ove klase, objek koj ce nam omogucit azuriranje baze podataka, predamu mu app
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
+
+
+
 
 
 #region Class
@@ -32,7 +39,7 @@ class User (db.Model):
     username = db.Column(db.String(50), unique = True , nullable = False)
     password = db.Column (db.Integer(), nullable = False)
 
-#User(ime='Erika', prezime = 'Rerecic', email = 'erika.rerecic@gmail.com', username = 'Rerika', password ='lozinka1234')
+User(ime='Erika', prezime = 'Rerecic', email = 'erika.rerecic@gmail.com', username = 'Rerika', password ='lozinka1234')
 #NAPRAVI GA U TERMINALU KASNIJE
 
 class Biljke (db.Model):
@@ -68,7 +75,7 @@ class Form_za_biljke (FlaskForm):
 
 
 class Vaze (db.Model):
-    __tablename__ = 'Posude'
+    __tablename__ = 'Vaze'
     id = db.Column(db.Integer(), primary_key = True )
     ime_vaze = db.Column(db.String(50), unique = True, nullable = False)
     id_biljke = db.Column (db.Integer, db.ForeignKey('Biljke.id'))
@@ -96,19 +103,41 @@ class Profil (FlaskForm):
 class Biljka_u_vazu (FlaskForm):
     pass
 
+db.create_all()
 
 
 
 #end region
 
+
+
+
 #region rute
 
+'''@app.login('')
+def login():
+    pass
+'''
 
-@app.route('/')
+@app.route('/', methods = ['GET'])
 def index():
-  return render_template('index.html')
+    res = Vaze.query.all()
+    print("[VAZE GET RES] ", res)
+    return render_template('index.html', Vaze = res)
 
-@app.route('/profil', methods = ['GET' , 'POST'])  #da li ovo moze ovako i ako da, moram li koristiti methods tu?
+
+
+@app.route('/ucitaj_senzor')
+def index_senzor():
+
+
+    vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
+
+
+
+    return render_template('index_senzor.html', Vaze = Vaze, Biljke = Biljke, vlaznost = vlaznost, ph = ph, light = light)
+
+@app.route('/profil', methods = ['GET' , 'POST']) 
 def profil():
     user=User[1]
 
@@ -179,11 +208,12 @@ def dodaj_biljku():
         )
     #napravila sam objekt biljku, pomocu klase koju sam izradila i uzimajuci podatke koje sam dobila iz form-a
 
-    db.session.add(nova_biljka)
-    db.session.commit()
-    flash('Nova biljka je uspješno dodana')
+        db.session.add(nova_biljka)
+        db.session.commit()
+        flash('Nova biljka je uspješno dodana')
     #Tu sam dodala napravljen objekt i predala ga databazi kako bi ga upisala u databazu, jedan objekt = row podataka
     #Uz to i napravim neki flash message da korisnik zna da je uspjesno odradjeno
+    #render_template('dodaj_biljku.html', form=form, Biljke = Biljke)
 
     return render_template('dodaj_biljku.html', form=form, Biljke = Biljke)
 
@@ -191,78 +221,51 @@ def dodaj_biljku():
 @app.route('/dodaj_vazu', methods = ['GET', 'POST'])
 def dodaj_vazu():
     form = Form_za_vazu()
+    biljke = Biljke.query.all()
     
     if form.validate_on_submit():
-        ime_vaze = form.ime_vaze.data
         ime_biljke = form.odabir_biljke.data
+        print(ime_biljke)
         if ime_biljke == None:
             odabir_biljke = None
-        elif ime_biljke not in Biljke: #da li se to tako poziva, baza? 
+        elif ime_biljke not in biljke: #da li se to tako poziva, baza? 
             odabir_biljke = None
         else:
-            odabir_biljke = Biljke.query.filter_by(ime_biljke).first()
-
+            odabir_biljke = Biljke.query.filter_by(ime_biljke = ime_biljke)
+            print(odabir_biljke)
         nova_vaza = Vaze (
             ime_vaze=form.ime_vaze.data,
-            id_biljke = odabir_biljke.id)
+            id_biljke = 3)
 
         db.session.add(nova_vaza)
         db.session.commit()
         flash('Dodali ste vazu')
     
-    return render_template('dodaj_vazu.html')
+    return render_template('dodaj_vazu.html', form = form, Vaze = Vaze, Biljke = Biljke, biljke = biljke)
 
 
 
-@app.route('/popis_vaza/dodaj_biljku')
-def dodaj_biljku_vazi():
-    pass
-    
+@app.route('/popis_vaza', methods = ['GET', 'POST'])
+def popis_vaza():
+    res = Vaze.query.all()
+    print("[Vaze GET RES] ", res)
+    return render_template('index01.html',Vaze = Vaze)
 
+@app.route('/popis_biljki',  methods = ['GET'])
+def popis_biljki():
+    res = Biljke.query.all()
+    print("[BILJKE GET RES] ", res)
+    return render_template('popis.html',Biljke = res)
 
-#end region
-
-    for biljka in Vaze.biljka: 
-        if biljka.max_svjetlost < light:  #provjeri da li se tako proziva
-            flash('Premjestite biljku na manje osvjetljeno mjesto')
-        elif biljka.max_svjetlost > light:
-            print ('')
-
-        elif biljka.min_svjetlost < light:  #provjeri da li se tako proziva
-            flash('Premjestite biljku na manje osvjetljeno mjesto')
-        elif biljka.min_svjetlost > light:
-            print ('')
-        else:
-            pass
-        
-        if biljka.ph < light:  #provjeri da li se tako proziva
-            print('Premjestite biljku na manje osvjetljeno mjesto')
-        elif biljka.ph > light:
-            print ('')
-        else:
-            pass
-
-        if biljka.max_vlaznost < vlaznost:  #provjeri da li se tako proziva
-            print('Premjestite biljku na manje osvjetljeno mjesto')
-        elif biljka.max_vlaznost > vlaznost:
-            print ('')
-        else:
-            pass
-
-        if biljka.min_vlaznost < vlaznost:  #provjeri da li se tako proziva
-            print('Premjestite biljku na manje osvjetljeno mjesto') #kako prikazem??
-        elif biljka.min_vlaznost > vlaznost:
-            print ('')
-        else:
-            pass
-    return render_template('dodaj_biljku.html')
+@app.route('/popis_biljki_one',  methods = ['GET'])
+def biljka_get():
+    res = Biljke.query.get(1)
+    print("[BILJKE GET RES] ", res.ime_biljke)
+    return {'Status':'OK'}
 
     
      
 
-
-def Senzor_read(vlaznost, ph, light, temp, Biljke, Vaze):
-    pass
 
 
 
