@@ -3,7 +3,7 @@ from flask import Flask, flash, session, render_template, url_for, jsonify
 from flask_wtf import FlaskForm
 import json
 from sqlalchemy import true
-from wtforms import StringField, SubmitField, FloatField, IntegerField
+from wtforms import StringField, SubmitField, FloatField, IntegerField, PasswordField
 from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
 from datetime import datetime 
@@ -39,14 +39,14 @@ class User (db.Model):
     username = db.Column(db.String(50), unique = True , nullable = False)
     password = db.Column (db.Integer(), nullable = False)
 
-User(ime='Erika', prezime = 'Rerecic', email = 'erika.rerecic@gmail.com', username = 'Rerika', password ='lozinka1234')
+
 #NAPRAVI GA U TERMINALU KASNIJE
 
 class Biljke (db.Model):
     __tablename__ = 'Biljke'
     id = db.Column(db.Integer(), primary_key = True )
     ime_biljke = db.Column(db.String(50), unique = True , nullable = False)
-    slika = db.Column (db.String(), nullable = False, default = 'default.jpg')
+    slika = db.Column (db.String(), nullable = False, default = 'prazna_vaza.jpg')
     max_svjetlost = db.Column (db.Float(), nullable = False )
     min_svjetlost = db.Column (db.Float(), nullable = False)
     max_ph = db.Column (db.Integer(), nullable = False)
@@ -90,14 +90,13 @@ class Form_za_vazu (FlaskForm):
 
 
 class Profil (FlaskForm):
-    ime= StringField('Kako želite nazvati ovu posudu?')
-    prezime = StringField('Koju biljku želite posaditi?')
-    email = StringField('Koju biljku želite posaditi?')
-    username = StringField('Koju biljku želite posaditi?')
-    password = StringField('Koju biljku želite posaditi?')
+    ime= StringField('Upišite novo ime')
+    prezime = StringField('Upišite novo prezime')
+    email = StringField('Upišite novi email')
+    username = StringField('Odaberite novi username')
+    password = PasswordField('Odaberite novi password')
 
-
-    submit = SubmitField('Dodaj novu posudu')
+    submit = SubmitField('Promjenite svoje podatke')
 
 
 class Biljka_u_vazu (FlaskForm):
@@ -127,19 +126,22 @@ def index():
 
 
 
-@app.route('/ucitaj_senzor')
+@app.route('/ucitaj_senzor', methods = ['GET', 'POST'])
 def index_senzor():
-
+    vaze = Vaze.query.all()
+    biljke = Biljke.query.all()
+    print(Vaze)
+    temp = 30
 
     vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
+    print(vlaznost, ph, light)
 
 
-
-    return render_template('index_senzor.html', Vaze = Vaze, Biljke = Biljke, vlaznost = vlaznost, ph = ph, light = light)
+    return render_template('index_senzor.html', vaze = vaze, biljke = biljke, vlaznost = vlaznost, ph = ph, light = light, temp = temp)
 
 @app.route('/profil', methods = ['GET' , 'POST']) 
 def profil():
-    user=User[1]
+    user=User.query.get(1)
 
     #OVDJE GA PRVO ISPISI
 
@@ -148,45 +150,42 @@ def profil():
     form = Profil ()
     if form.validate_on_submit():
         #kada/ako stisnemo submit na formu desi se ovo dolje:
-        ime = form.ime.data,
-        prezime = form.prezime.data,
-        email = form.email.data,
-        username = form.username.data,
-        password = form.password.data
 
-        if ime != '':
+
+        if form.ime.data == "":
+            print('no changes')
+        else:
+            user.ime = form.ime.data
+
+        if form.prezime.data == "":
             pass
         else:
-            user.ime = ime
+            user.prezime = form.prezime.data
 
-        if prezime != '':
+
+        if form.email.data == "":
             pass
         else:
-            user.prezime = prezime
+            user.email = form.email.data
 
-        if email != '':
+        if form.username.data == "":
             pass
         else:
-            user.email = email
+            user.username = form.username.data
 
-        if username != '':
+        if form.password.data == "":
             pass
         else:
-            user.username = username
+            user.password = form.password.data
 
-        if password != '':
-            pass
-        else:
-            user.password = password
+        print(f' Nakon if-a {user.ime}{user.prezime} {user.username}{user.password}')
+
 
         db.session.commit()
         flash('Vaši podaci su promjenjeni')
 
-    return render_template('template/Profil.html', form = form , user = user)
+    return render_template('Profil.html', form = form , user = user)
         
-
-#PROBLEM- ovo ce promjenit cjelog usera a ne samo djelove 
-
 
 @app.route('/dodaj_biljku', methods = ['GET' , 'POST'])
 def dodaj_biljku():
@@ -243,7 +242,7 @@ def dodaj_vazu():
     
     return render_template('dodaj_vazu.html', form = form, Vaze = Vaze, Biljke = Biljke, biljke = biljke)
 
-
+#ovo radi osim prikaza biljki koje korisnik moze odabrati , u najgorem slucaju samo stavi u obican query all 
 
 @app.route('/popis_vaza', methods = ['GET', 'POST'])
 def popis_vaza():
@@ -255,13 +254,24 @@ def popis_vaza():
 def popis_biljki():
     res = Biljke.query.all()
     print("[BILJKE GET RES] ", res)
-    return render_template('popis.html',Biljke = res)
+    biljka_id = None
+    return render_template('popis.html',Biljke = res, biljka_id = biljka_id)
 
 @app.route('/popis_biljki_one',  methods = ['GET'])
 def biljka_get():
     res = Biljke.query.get(1)
     print("[BILJKE GET RES] ", res.ime_biljke)
     return {'Status':'OK'}
+
+
+@app.route('/biljka_edit/<biljka_id>', methods = ['GET' , 'POST'])
+def biljka_edit(biljka_id):
+    biljka = Biljke.query.get(biljka_id)
+
+
+    return render_template('biljka_edit.html', biljka = biljka)
+
+
 
     
      

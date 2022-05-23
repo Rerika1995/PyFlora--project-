@@ -1,4 +1,4 @@
-% extends 'layout.html'
+{% extends 'layout.html'%}
 
 {%block title%} Moj Profil {%endblock%}
 
@@ -9,27 +9,28 @@
     <div class="card-body">
         <p class="lead text-white m-0">
             <strong>
-                Ime i Prezime: {{user.name}} {{user.prezime}}
+                VAŠI PODACI 
             </strong><br>
-            username - {{ user.username }} &#8451;<br>
-            email - {{ user.email }} %<br>
-            password - {%for u in user.password: %}  {{u}} {%endfor%} <br>
+            Ime i Prezime: {{user.ime}} {{user.prezime}}
+            Username: {{ user.username }}<br>
+            Email: {{ user.email}}<br>
+            Password : {{user.password}} <br>
         </p>
     </div>
 </div>
 
 <form method="POST">
-    {{form.hidden_tag()}}
-    {{form.ime.label}}
-    {{form.ime}}
+    {{form.hidden_tag()}} 
+    {{form.ime.label}} 
+    {{form.ime}} <br>
     {{form.prezime.label}}
-    {{form.prezime}}
+    {{form.prezime}} <br>
     {{form.email.label}}
-    {{form.email}}
+    {{form.email}} <br>
     {{form.username.label}}
-    {{form.username}
+    {{form.username}}<br>
     {{form.password.label}}
-    {{form.password}}
+    {{form.password}}<br>
 
     {{form.submit()}}
 
