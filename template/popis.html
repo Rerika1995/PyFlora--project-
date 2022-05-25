@@ -7,24 +7,37 @@
 
 {%block content%}
 
+<div class="container">
+    <div class="row row-cols-4">
+
+
     {%for biljka in Biljke:%}
 
     <div class="col-md-4 mb-5">
         <div class="card h-100">
             <h2 class="card-title">{{ biljka.id }}</h2>
             <h2 class="card-title">{{ biljka.ime_biljke }}</h2>
-            
+
+            <div class="card h-100">
+                <a class="btn btn-info" href="{{url_for('biljka_edit', biljka_id=biljka.id )}}">
+                    EDIT 
+                </a>
+            </div>
+
+
         </div>
-    </div><div>
-        <a class="btn btn-info" href="{{url_for('biljka_edit', biljka_id=biljka.id )}}">
-            EDIT 
-        </a>
+
+ 
     </div>
 
 
 
 
     {%endfor%}
+
+    </div>
         
 
 {%endblock%}
+
+    </div>

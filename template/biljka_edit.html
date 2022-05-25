@@ -1,34 +1,114 @@
-{% extends 'layout.html'%}
+{% extends 'layout.html' %}
 
-{%block title%} Dodaj Biljku {%endblock%}
-
-
-{%block content%}
-
+{% block title %}
+Post Details
+{% endblock %}
 
 
 
-<div class="col-md-4 mb-5">
-    <div class="card h-100">
-        <h2 class="card-title">{{ biljka.id }}</h2>
-        <h2 class="card-title">{{ biljka.ime_biljke }}</h2>
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Post content-->
+        <article>
+            <!-- Post header-->
+            <header class="mb-4">
+                <!-- Post title-->
+                <h1 class="fw-bolder mb-1">{{ biljka.ime_vaze }}</h1>
+                <!-- Post meta content-->
+                <div class="text-muted fst-italic mb-2">{{biljka.ime_biljke}}</div>
+            </header>
+            <!-- Preview image figure-->
+            <figure class="mb-4"><img class="img-fluid rounded" src="{{ biljka.slika }}" alt="..." /></figure>
+            <!-- Post content-->
+            <section class="mb-5">
+                <p class="fs-5 mb-4">
+                    {{ biljka.ime_vaze }}
+                </p>
+            </section>
+        </article>
+
+        <!-- Comments section-->
+        <section class="mb-5">
+            <div class="card bg-light">
+                <div class="card-body">
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+
+
+
         
+    <!-- Side widgets-->
+    <div class="col-lg-4">
+        <!-- Search widget-->
+        <div class="card mb-4">
+            <div class="card-header">IZBRIŠI VAZU</div>
+            <div class="container">
+
+
+                <div>
+                    <a class="btn btn-info" href="{{url_for('delete_biljka', biljka_id=biljka.id) }}">
+                        IZBRIŠI VAZU
+                    </a>
+
+                </div>
+                </div>
+        </div>
+
+        <!-- Side widget-->
+        <div class="card mb-4">
+            <div class="card-header">UREDI DETALJE</div>
+            <div class="card-body">
+                <form method="POST">
+
+
+                    <div class="card mb-4">
+
+                    {{form.hidden_tag()}}
+                    {{form.ime_biljke.label}}
+                    {{form.ime_biljke}}
+                    {{form.slika.label}}
+                    {{form.slika}}
+                    {{form.max_svjetlost.label}}
+                    {{form.max_svjetlost}}
+                    {{form.min_svjetlost.label}}
+                    {{form.min_svjetlost}}
+                    {{form.max_ph.label}}
+                    {{form.max_ph}}
+                    {{form.min_ph.label}}
+                    {{form.min_ph}}
+                    {{form.max_vlaznost.label}}
+                    {{form.max_vlaznost}}
+                    {{form.min_vlaznost.label}}
+                    {{form.min_vlaznost}}
+                    {{form.max_temp.label}}
+                    {{form. max_temp}}
+                    {{form.min_temp.label}}
+                    {{form. min_temp}}
+                
+                    {{form.submit()}}
+                    </div>
+                
+                </form>
+                
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+
     </div>
 </div>
 
-<div>
-    <a class="btn btn-info" href="#">
-        EDIT 
-    </a>
-</div>
-
-
-
-{%endblock%}
-
-
-
-
-
-
-
+{% endblock %}

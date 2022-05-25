@@ -1,0 +1,126 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Post Details
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Post content-->
+        <article>
+            <!-- Post header-->
+            <header class="mb-4">
+                <!-- Post title-->
+                <h1 class="fw-bolder mb-1">{{ vaza.ime_vaze }}</h1>
+                <!-- Post meta content-->
+                <div class="text-muted fst-italic mb-2">{{vaza.biljka.ime_biljke}}</div>
+            </header>
+            <!-- Preview image figure-->
+            <figure class="mb-2"><img class="img-fluid rounded" src="{{ vaza.biljka.slika }}" alt="..." /></figure>
+            <!-- Post content-->
+            <section class="mb-5">
+                <p class="fs-5 mb-4">
+
+                            {%if vaza.biljka.ime_biljke != ''%}
+                                <div class="card-body">
+                                    
+                                    <h4 class="card-title">Prigodno za {{ vaza.biljka.ime_biljke }}</h2>
+                                    <p class="card-text">
+                                        Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
+                                    </p>
+                                    <p class="card-text">
+                                        pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                                    </p>
+                                    <p class="card-text">
+                                        Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
+                                    </p>
+                                    <p class="card-text">
+                                        Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                                    </p>
+                                </div>
+                            {%else%}
+                                <p class="card-text">
+                                    Biljka je prazna
+                                </p>
+                                <a class="btn btn-info" href="{{ url_for('dodaj_biljku_vazi') }}">
+                                    Dodaj biljku </a>
+
+                        {%endif%}
+                </p>
+            </section>
+        </article>
+        <!-- Comments section-->
+        <section class="mb-5">
+            <div class="card bg-light">
+                <div class="card-body">
+
+
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- Side widgets-->
+    <div class="col-lg-4">
+        <!-- Search widget-->
+        <div class="card mb-4">
+            <div class="card-header">IZBRIŠI VAZU</div>
+            <div class="container">
+
+
+                <div>
+                    <a class="btn btn-info" href="{{url_for('delete_vaza', vaza_id=vaza.id)}}">
+                        IZBRIŠI VAZU
+                    </a>
+                    <a class="btn btn-info" href="{{url_for('delete_biljkaUVazi', vaza_id=vaza.id)}}">
+                        MAKNI BILJKU IZ VAZE
+                    </a>
+                </div>
+                </div>
+        </div>
+
+        <!-- Side widget-->
+        <div class="card mb-4">
+            <div class="card-header">UREDI DETALJE</div>
+            <div class="card-body">
+
+                <form method="POST">
+
+                    <div class="card mb-4">
+                    {{form.hidden_tag()}}
+                    {{form.ime_vaze.label}}
+                    {{form.ime_vaze}}
+                    {{form.odabir_biljke.label}}
+                    {{form.odabir_biljke}}
+                
+                
+                    {{form.submit()}}
+
+
+                    </div>
+                    <div class="card mb-4">
+                        {%for biljka in biljka%}
+                        <p class="fs-6 mb-4" >
+                            {{biljka.ime_biljke}}
+                        </p>
+                        {%endfor%}
+                    </div>
+                </form>
+
+
+
+
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock %}

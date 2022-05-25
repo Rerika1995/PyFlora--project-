@@ -1,5 +1,5 @@
 
-from flask import Flask, flash, session, render_template, url_for, jsonify
+from flask import Flask, flash, redirect, session, render_template, url_for, jsonify
 from flask_wtf import FlaskForm
 import json
 from sqlalchemy import true
@@ -82,11 +82,11 @@ class Vaze (db.Model):
 
 
 class Form_za_vazu (FlaskForm):
-    ime_vaze = StringField('Kako želite nazvati ovu posudu?')
+    ime_vaze = StringField('Kako želite nazvati ovu vazu?')
     odabir_biljke = StringField('Koju biljku želite posaditi? Napišite točno kao u prikazano u popisu')
 
 
-    submit = SubmitField('Dodaj novu posudu')
+    submit = SubmitField('Dodaj novu vazu')
 
 
 class Profil (FlaskForm):
@@ -122,7 +122,8 @@ def login():
 def index():
     res = Vaze.query.all()
     print("[VAZE GET RES] ", res)
-    return render_template('index.html', Vaze = res)
+    vaza_id = None
+    return render_template('index.html', Vaze = res , vaza_id=vaza_id)
 
 
 
@@ -223,21 +224,17 @@ def dodaj_vazu():
     biljke = Biljke.query.all()
     
     if form.validate_on_submit():
-        ime_biljke = form.odabir_biljke.data
-        print(ime_biljke)
-        if ime_biljke == None:
-            odabir_biljke = None
-        elif ime_biljke not in biljke: #da li se to tako poziva, baza? 
-            odabir_biljke = None
-        else:
-            odabir_biljke = Biljke.query.filter_by(ime_biljke = ime_biljke)
-            print(odabir_biljke)
+
+        odabir_biljke = Biljke.query.filter_by(ime_biljke = form.odabir_biljke.data).first()
+
+
         nova_vaza = Vaze (
             ime_vaze=form.ime_vaze.data,
-            id_biljke = 3)
+            id_biljke = odabir_biljke.id)
 
         db.session.add(nova_vaza)
         db.session.commit()
+        
         flash('Dodali ste vazu')
     
     return render_template('dodaj_vazu.html', form = form, Vaze = Vaze, Biljke = Biljke, biljke = biljke)
@@ -257,6 +254,7 @@ def popis_biljki():
     biljka_id = None
     return render_template('popis.html',Biljke = res, biljka_id = biljka_id)
 
+
 @app.route('/popis_biljki_one',  methods = ['GET'])
 def biljka_get():
     res = Biljke.query.get(1)
@@ -266,14 +264,141 @@ def biljka_get():
 
 @app.route('/biljka_edit/<biljka_id>', methods = ['GET' , 'POST'])
 def biljka_edit(biljka_id):
+    print(biljka_id)
     biljka = Biljke.query.get(biljka_id)
+    print(biljka.ime_biljke)
+    biljka_id = biljka.id
+
+    form = Form_za_biljke()
+
+    if form.validate_on_submit():
+        print('form is validated')
+        
+        if form.ime_biljke == "":
+            print('no changes')
+        else:
+            biljka.ime_biljke = form.ime_biljke.data
+            print(biljka.ime_biljke)
 
 
-    return render_template('biljka_edit.html', biljka = biljka)
+        if form.slika_biljke == "":
+            print('no changes')
+        else:
+            biljka.slika = form.slika.data
+
+        if form.max_svjetlost == "":
+            print('no changes')
+        else:
+            biljka.max_svjetlost = form.max_svjetlost.data
+
+        if form.max_svjetlost == "":
+            print('no changes')
+        else:
+            biljka.max_svjetlost = form.max_svjetlost.data
+                    
+        if form.min_svjetlost == "":
+            print('no changes')
+        else:
+            biljka.max_svjetlost = form.min_svjetlost.data
+            
+        if form.max_ph == "":
+            print('no changes')
+        else:
+            biljka.max_ph = form.max_ph.data
+            
+        if form.min_ph == "":
+            print('no changes')
+        else:
+            biljka.min_ph = form.min_ph.data
+            
+        if form.max_vlaznost == "":
+            print('no changes')
+        else:
+            biljka.max_vlaznost = form.max_vlaznost.data
+            
+        if form.min_vlaznost == "":
+            print('no changes')
+        else:
+            biljka.min_vlaznost = form.min_vlaznost.data
+            
+        if form.max_temp == "":
+            print('no changes')
+        else:
+            biljka.max_temp = form.max_temp.data
+            
+        if form.min_temp == "":
+            print('no changes')
+        else:
+            biljka.min_temp = form.min_temp.data
+
+        #MOGU LI OVO IKAKO NAPISATI U FOR PETLJI, KAZE DA NIJE ITERABILE
+        print(biljka.ime_biljke)
+        db.session.commit()
+        flash('Biljka je izmjenjena')
+
+#POSTOJI LI NEKI MODUL KOJI MI DA BUTTON KOJI KLIKNEM I DA SE NESTO DESI 
+
+
+    return render_template('biljka_edit.html', biljka = biljka, form=form , biljka_id=biljka_id)
+
+
+@app.route ('/delete_biljka/<biljka_id>', methods = ['GET' , 'POST'])
+def delete_biljka(biljka_id):
+    print('you are in delete route')
+    biljka = Biljke.query.get(biljka_id)
+    db.session.delete(biljka) #PROVJERI DA LI JE OK
+    db.session.commit()
+    return redirect("/popis_biljki")
+
+
+@app.route('/vaza_edit/<vaza_id>', methods = ['GET', 'POST'])
+def vaza_edit(vaza_id):
+    form = Form_za_vazu()
+    vaza = Vaze.query.get(vaza_id)
+    biljka = Biljke.query.all()
+    vaza_id=vaza.id
+    print(vaza_id)
+
+    if form.validate_on_submit():
+        print('form is validated')
+        
+        if form.ime_vaze == "":
+            print('no changes')
+        else:
+            vaza.ime_vaze = form.ime_vaze.data
+
+        if form.odabir_biljke == "":
+            print('no changes')
+        else:
+            vaza.biljka = form.odabir_biljke
+
+
+    return render_template('vaza_edit.html', vaza = vaza, form=form, biljka=biljka , vaza_id=vaza_id )
+
+
+@app.route ('/delete_vaza/<vaza_id>', methods = ['GET' , 'POST'])
+def delete_vaza(vaza_id):
+    vaza = Vaze.query.get(vaza_id)
+    db.session.delete(vaza) #PROVJERI DA LI JE OK
+    db.session.commit()
+    return redirect("/")
+
+
+@app.route ('/delete_biljkaUVazi/<vaza_id>', methods = ['GET' , 'POST'])
+def delete_biljkaUVazi(vaza_id):
+    vaza=Vaze.query.get(vaza_id)
+    db.session.delete(vaza.id_biljke)
+    db.session.commit()
+    return redirect("/")
 
 
 
-    
+
+    #napravila sam objekt biljku, pomocu klase koju sam izradila i uzimajuci podatke koje sam dobila iz form-a
+
+
+
+
      
 
 

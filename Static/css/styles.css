@@ -638,6 +638,8 @@ progress {
   padding-left: var(--bs-gutter-x, 0.75rem);
   margin-right: auto;
   margin-left: auto;
+  padding-bottom: var(--bs-gutter-x, 0.75rem);
+  padding-top: var(--bs-gutter-x, 0.75rem);
 }
 
 @media (min-width: 576px) {
@@ -4517,6 +4519,7 @@ textarea.form-control-lg {
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
+  padding-right: 0.25rem;
 }
 .card > hr {
   margin-right: 0;

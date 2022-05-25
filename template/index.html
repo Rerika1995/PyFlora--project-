@@ -4,27 +4,31 @@
 
 {%block content%}
 
+<div class="container">
+
+
     <div>
         <a class="btn btn-info" href="{{ url_for('index_senzor') }}">
             SYNC
         </a>
-    </div>
-    <div>
         <a class="btn btn-info" href="{{ url_for('dodaj_vazu') }}">
             DODAJ NOVU VAZU
         </a>
     </div>
+    </div>
 
     
-    <div class="col-md-4 mb-5">
-        <div class="card h-100">
-    {%for vaza in Vaze%}
+    <div class="container">
+        <div class="row row-cols-4">
 
+
+    {%for vaza in Vaze%}
+        <div class="card">
 
 
                         <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
 
-                        {%if vaza.biljka !=''%}
+                        {%if vaza.biljka != None%}
                             <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
                             {%if vaza.biljka.ime_biljke != ''%}
                                 <div class="card-body">
@@ -43,15 +47,26 @@
                                         Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
                                     </p>
                                 </div>
-                            {%else%}
-                                <a class="btn btn-info" href="{{ url_for('dodaj_biljku_vazi') }}">
-                                    Dodaj biljku
+                        {%else%}
+                            <p class="card-text">
+                                Vaza je prazna, kliknite na edit za dodavanje
+                            </p>
+
+
+                        {%endif%}
+                            {%endif%}
+    <div>
+        <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">
+            EDIT 
+        </a>
+    </div>
                                      
-                                
-                        {%endif%}{%endif%}
+                             
+    </div>                    
 
     {%endfor%}
-                </div>           
+        
+    </div>   
 
     </div>
         
