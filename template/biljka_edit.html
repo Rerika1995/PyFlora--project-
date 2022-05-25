@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-Post Details
+
+{{biljka.ime_biljke}}
 {% endblock %}
 
 
@@ -15,7 +16,7 @@ Post Details
             <!-- Post header-->
             <header class="mb-4">
                 <!-- Post title-->
-                <h1 class="fw-bolder mb-1">{{ biljka.ime_vaze }}</h1>
+                <h1 class="fw-bolder mb-1">{{ biljka.ime_biljke }}</h1>
                 <!-- Post meta content-->
                 <div class="text-muted fst-italic mb-2">{{biljka.ime_biljke}}</div>
             </header>
@@ -24,7 +25,16 @@ Post Details
             <!-- Post content-->
             <section class="mb-5">
                 <p class="fs-5 mb-4">
-                    {{ biljka.ime_vaze }}
+                    Potrebna Vlažnost Zemlje : {{ biljka.min_vlaznost }} % - {{ biljka.max_vlaznost }} %
+                </p>
+                <p class="fs-5 mb-4">
+                    Idealna temperatura : {{ biljka.min_temp }} - {{ biljka.max_temp}} celsius
+                </p>
+                <p class="fs-5 mb-4">
+                    Potreban pH : {{ biljka.min_ph }} - {{ biljka.max_ph}} 
+                </p>
+                <p class="fs-5 mb-4">
+                    Potrebna svjetlost : {{ biljka.min_svjetlost }} - {{ biljka.max_svjetlost}} 
                 </p>
             </section>
         </article>
@@ -48,13 +58,13 @@ Post Details
     <div class="col-lg-4">
         <!-- Search widget-->
         <div class="card mb-4">
-            <div class="card-header">IZBRIŠI VAZU</div>
+            <div class="card-header">IZBRIŠI BILJKU</div>
             <div class="container">
 
 
                 <div>
                     <a class="btn btn-info" href="{{url_for('delete_biljka', biljka_id=biljka.id) }}">
-                        IZBRIŠI VAZU
+                        IZBRIŠI BILJKU
                     </a>
 
                 </div>

@@ -15,61 +15,91 @@
             DODAJ NOVU VAZU
         </a>
     </div>
-    </div>
 
-    
     <div class="container">
         <div class="row row-cols-4">
+    
+    
+        {%for vaza in Vaze:%}
+    
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
+                
+                {%if vaza.id_biljke != None%}
 
+                    <section class="mb-5">
+                        <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
 
-    {%for vaza in Vaze%}
-        <div class="card">
+                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
 
-
-                        <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
-
-                        {%if vaza.biljka != None%}
-                            <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
-                            {%if vaza.biljka.ime_biljke != ''%}
-                                <div class="card-body">
-                                    <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
-                                    <h2 class="card-title">PRIGODNO ZA {{ vaza.biljka.ime_biljke }}</h2>
-                                    <p class="card-text">
-                                        Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
-                                    </p>
-                                    <p class="card-text">
-                                        pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
-                                    </p>
-                                    <p class="card-text">
-                                        Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
-                                    </p>
-                                    <p class="card-text">
-                                        Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
-                                    </p>
-                                </div>
-                        {%else%}
-                            <p class="card-text">
-                                Vaza je prazna, kliknite na edit za dodavanje
-                            </p>
-
-
-                        {%endif%}
-                            {%endif%}
-    <div>
-        <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">
-            EDIT 
-        </a>
-    </div>
-                                     
-                             
-    </div>                    
-
-    {%endfor%}
+                        <p class="fs-5 mb-4">
+                            Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
+                        </p>
+                        <p class="fs-5 mb-4">
+                            Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                        </p>
+                        <p class="fs-5 mb-4">
+                            pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                        </p>
+                        <p class="fs-5 mb-4">
+                            Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}} 
+                        </p>
+                    </section>
         
-    </div>   
-
-    </div>
         
+        
+        
+                    <div>
+                        <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">
+                            EDIT 
+                        </a>
+                    </div>
+    
+                {%else%}
+
+                <section class="mb-5">
+                    <p class="fs-5 mb-4">
+                        Vaza je prazna
+
+                    </p>
+                    <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+
+                    <div>
+                        <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">
+                            EDIT 
+                        </a>
+                    </div>
+
+                </section>
+                {%endif%}
+                    
+    
+            </div>
+    
+     
+        </div>
+    
+    
+    
+    
+        {%endfor%}
+    
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 {%endblock%}
 

@@ -129,16 +129,14 @@ def index():
 
 @app.route('/ucitaj_senzor', methods = ['GET', 'POST'])
 def index_senzor():
-    vaze = Vaze.query.all()
+    res = Vaze.query.all()
     biljke = Biljke.query.all()
-    print(Vaze)
     temp = 30
-
     vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
-    print(vlaznost, ph, light)
+    print(vlaznost)
+    print(vlaznost, ph, light, temp)
 
-
-    return render_template('index_senzor.html', vaze = vaze, biljke = biljke, vlaznost = vlaznost, ph = ph, light = light, temp = temp)
+    return render_template('index_senzor.html', vaze = res, biljke = biljke, vlaznost = vlaznost, ph = ph, light = light, temp = temp)
 
 @app.route('/profil', methods = ['GET' , 'POST']) 
 def profil():
@@ -222,20 +220,27 @@ def dodaj_biljku():
 def dodaj_vazu():
     form = Form_za_vazu()
     biljke = Biljke.query.all()
+
     
     if form.validate_on_submit():
 
         odabir_biljke = Biljke.query.filter_by(ime_biljke = form.odabir_biljke.data).first()
 
-
-        nova_vaza = Vaze (
-            ime_vaze=form.ime_vaze.data,
-            id_biljke = odabir_biljke.id)
-
+        if form.odabir_biljke.data == '':
+            nova_vaza = Vaze (
+                ime_vaze=form.ime_vaze.data,
+                id_biljke = None)
+        else:
+            nova_vaza = Vaze (
+                ime_vaze=form.ime_vaze.data,
+                id_biljke = odabir_biljke.id)
+            print('inside dodavanje biljke')
         db.session.add(nova_vaza)
         db.session.commit()
         
         flash('Dodali ste vazu')
+
+        #KORISTI try and EXCEPT ako biljka nije u bazi
     
     return render_template('dodaj_vazu.html', form = form, Vaze = Vaze, Biljke = Biljke, biljke = biljke)
 
@@ -247,6 +252,8 @@ def popis_vaza():
     print("[Vaze GET RES] ", res)
     return render_template('index01.html',Vaze = Vaze)
 
+
+
 @app.route('/popis_biljki',  methods = ['GET'])
 def popis_biljki():
     res = Biljke.query.all()
@@ -254,59 +261,62 @@ def popis_biljki():
     biljka_id = None
     return render_template('popis.html',Biljke = res, biljka_id = biljka_id)
 
-
+'''
 @app.route('/popis_biljki_one',  methods = ['GET'])
 def biljka_get():
     res = Biljke.query.get(1)
     print("[BILJKE GET RES] ", res.ime_biljke)
     return {'Status':'OK'}
+'''
 
 
 @app.route('/biljka_edit/<biljka_id>', methods = ['GET' , 'POST'])
 def biljka_edit(biljka_id):
-    print(biljka_id)
     biljka = Biljke.query.get(biljka_id)
+    #biljka_id = biljka.id
     print(biljka.ime_biljke)
-    biljka_id = biljka.id
+    print(biljka.max_svjetlost)
 
     form = Form_za_biljke()
 
     if form.validate_on_submit():
+        print(form.ime_biljke.data)
+
         print('form is validated')
         
-        if form.ime_biljke == "":
+        if form.ime_biljke.data == "":
             print('no changes')
         else:
             biljka.ime_biljke = form.ime_biljke.data
             print(biljka.ime_biljke)
 
 
-        if form.slika_biljke == "":
+        if form.slika.data == "":
             print('no changes')
         else:
             biljka.slika = form.slika.data
 
-        if form.max_svjetlost == "":
+        if form.max_svjetlost.data == "":
             print('no changes')
         else:
             biljka.max_svjetlost = form.max_svjetlost.data
 
-        if form.max_svjetlost == "":
+        if form.max_svjetlost.data == "":
             print('no changes')
         else:
             biljka.max_svjetlost = form.max_svjetlost.data
                     
-        if form.min_svjetlost == "":
+        if form.min_svjetlost.data == "":
             print('no changes')
         else:
             biljka.max_svjetlost = form.min_svjetlost.data
             
-        if form.max_ph == "":
+        if form.max_ph.data == "":
             print('no changes')
         else:
             biljka.max_ph = form.max_ph.data
             
-        if form.min_ph == "":
+        if form.min_ph.data == "":
             print('no changes')
         else:
             biljka.min_ph = form.min_ph.data
@@ -316,17 +326,17 @@ def biljka_edit(biljka_id):
         else:
             biljka.max_vlaznost = form.max_vlaznost.data
             
-        if form.min_vlaznost == "":
+        if form.min_vlaznost.data == "":
             print('no changes')
         else:
             biljka.min_vlaznost = form.min_vlaznost.data
             
-        if form.max_temp == "":
+        if form.max_temp.data == "":
             print('no changes')
         else:
             biljka.max_temp = form.max_temp.data
             
-        if form.min_temp == "":
+        if form.min_temp.data == "":
             print('no changes')
         else:
             biljka.min_temp = form.min_temp.data
@@ -387,7 +397,7 @@ def delete_vaza(vaza_id):
 @app.route ('/delete_biljkaUVazi/<vaza_id>', methods = ['GET' , 'POST'])
 def delete_biljkaUVazi(vaza_id):
     vaza=Vaze.query.get(vaza_id)
-    db.session.delete(vaza.id_biljke)
+    vaza.id_biljke = None
     db.session.commit()
     return redirect("/")
 

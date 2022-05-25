@@ -15,8 +15,25 @@
 
     <div class="col-md-4 mb-5">
         <div class="card h-100">
-            <h2 class="card-title">{{ biljka.id }}</h2>
             <h2 class="card-title">{{ biljka.ime_biljke }}</h2>
+            
+            <section class="mb-5">
+                <p class="fs-5 mb-4">
+                    Potrebna Vlažnost Zemlje : {{ biljka.min_vlaznost }} % - {{ biljka.max_vlaznost }} %
+                </p>
+                <p class="fs-5 mb-4">
+                    Idealna temperatura : {{ biljka.min_temp }} - {{ biljka.max_temp}} celsius
+                </p>
+                <p class="fs-5 mb-4">
+                    Potreban pH : {{ biljka.min_ph }} - {{ biljka.max_ph}} 
+                </p>
+                <p class="fs-5 mb-4">
+                    Potrebna svjetlost : {{ biljka.min_svjetlost }} - {{ biljka.max_svjetlost}} 
+                </p>
+            </section>
+
+
+
 
             <div class="card h-100">
                 <a class="btn btn-info" href="{{url_for('biljka_edit', biljka_id=biljka.id )}}">
