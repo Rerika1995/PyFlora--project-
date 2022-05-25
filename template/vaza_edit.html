@@ -8,50 +8,61 @@ Post Details
 
 {% block content %}
 
+
 <div class="row">
     <div class="col-lg-8">
         <!-- Post content-->
         <article>
-            <!-- Post header-->
-            <header class="mb-4">
-                <!-- Post title-->
-                <h1 class="fw-bolder mb-1">{{ vaza.ime_vaze }}</h1>
-                <!-- Post meta content-->
-                <div class="text-muted fst-italic mb-2">{{vaza.biljka.ime_biljke}}</div>
-            </header>
-            <!-- Preview image figure-->
-            <figure class="mb-2"><img class="img-fluid rounded" src="{{ vaza.biljka.slika }}" alt="..." /></figure>
-            <!-- Post content-->
-            <section class="mb-5">
-                <p class="fs-5 mb-4">
+            <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
 
-                            {%if vaza.biljka.ime_biljke != ''%}
-                                <div class="card-body">
-                                    
-                                    <h4 class="card-title">Prigodno za {{ vaza.biljka.ime_biljke }}</h2>
-                                    <p class="card-text">
-                                        Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}}
-                                    </p>
-                                    <p class="card-text">
-                                        pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
-                                    </p>
-                                    <p class="card-text">
-                                        Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}}
-                                    </p>
-                                    <p class="card-text">
-                                        Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
-                                    </p>
-                                </div>
-                            {%else%}
-                                <p class="card-text">
-                                    Biljka je prazna
-                                </p>
-                                <a class="btn btn-info" href="{{ url_for('dodaj_biljku_vazi') }}">
-                                    Dodaj biljku </a>
+                {%if vaza.id_biljke != None%}
 
-                        {%endif%}
-                </p>
-            </section>
+                    <section class="mb-5">
+                        <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
+
+                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+
+                        <p class="fs-5 mb-4">
+                            Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
+                        </p>
+                        <p class="fs-5 mb-4">
+                            Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                        </p>
+                        <p class="fs-5 mb-4">
+                            pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                        </p>
+                        <p class="fs-5 mb-4">
+                            Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}} 
+                        </p>
+
+
+                        <div>
+                            <a class="btn btn-info" href="{{url_for('vaza_edit_senzor', vaza_id=vaza.id)}}">
+                                SYNC
+                            </a>
+                        </div>
+                        
+                    </section>
+        
+        
+        
+        
+                    <div>
+                        <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">
+                            EDIT 
+                        </a>
+                    </div>
+    
+                {%else%}
+
+                <section class="mb-5">
+                    <p class="fs-5 mb-4">
+                        Vaza je prazna
+
+                    </p>
+                    <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+
+                {%endif%}
         </article>
         <!-- Comments section-->
         <section class="mb-5">

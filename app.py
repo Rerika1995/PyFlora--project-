@@ -347,7 +347,7 @@ def biljka_edit(biljka_id):
         flash('Biljka je izmjenjena')
 
 #POSTOJI LI NEKI MODUL KOJI MI DA BUTTON KOJI KLIKNEM I DA SE NESTO DESI 
-
+    
 
     return render_template('biljka_edit.html', biljka = biljka, form=form , biljka_id=biljka_id)
 
@@ -371,19 +371,29 @@ def vaza_edit(vaza_id):
 
     if form.validate_on_submit():
         print('form is validated')
+
+        odabir_biljke = Biljke.query.filter_by(ime_biljke = form.odabir_biljke.data).first()
         
-        if form.ime_vaze == "":
+        if form.ime_vaze.data == "":
             print('no changes')
         else:
             vaza.ime_vaze = form.ime_vaze.data
 
-        if form.odabir_biljke == "":
+        if form.odabir_biljke.data == "":
             print('no changes')
         else:
-            vaza.biljka = form.odabir_biljke
+            vaza.id_biljke = odabir_biljke.id
+
+        db.session.commit()
+
 
 
     return render_template('vaza_edit.html', vaza = vaza, form=form, biljka=biljka , vaza_id=vaza_id )
+
+
+
+
+
 
 
 @app.route ('/delete_vaza/<vaza_id>', methods = ['GET' , 'POST'])
@@ -401,6 +411,14 @@ def delete_biljkaUVazi(vaza_id):
     db.session.commit()
     return redirect("/")
 
+
+@app.route ('/vaza_edit_senzor/<vaza_id>', methods = ['GET' , 'POST'])
+def vaza_edit_senzor(vaza_id):
+    vaza=Vaze.query.get(vaza_id)
+    temp = 30
+    vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
+
+    return render_template ('vaza_edit_senzor.html', vaza = vaza, temp = temp , vlaznost = vlaznost , ph=ph , light = light, vaza_id = vaza_id)
 
 
 

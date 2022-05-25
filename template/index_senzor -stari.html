@@ -1,0 +1,83 @@
+{%extends 'layout.html'%}
+
+{%block title%} Vaze {%endblock%}
+
+
+{%block content%}
+
+    <div>
+        <a class="btn btn-info" href="{{ url_for('index_senzor') }}">
+            SYNC
+        </a>
+    </div>
+
+    {%for vaza in vaze%}
+                <div class="col-md-4 mb-5">
+                    <div class="card h-100">
+                        <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
+
+                        {%if vaza.id_biljke != None%}
+
+                        <section class="mb-5">
+                            <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
+    
+                            <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+    
+                            <p class="fs-5 mb-4">
+                                Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
+                            </p>
+                            <p class="fs-5 mb-4">
+                                Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                            </p>
+                            <p class="fs-5 mb-4">
+                                pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                            </p>
+                            <p class="fs-5 mb-4">
+                                Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}} 
+                            </p>
+    
+    
+                            <div>
+                                <a class="btn btn-info" href="{{url_for('vaza_edit_senzor', vaza_id=vaza.id)}}">
+                                    SYNC
+                                </a>
+                            </div>
+                            
+                        </section>
+            
+            
+            
+        
+        
+                    {%else%}
+    
+                    <section class="mb-5">
+                        <p class="fs-5 mb-4">
+                            Vaza je prazna
+    
+                        </p>
+                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+    
+                    {%endif%}
+                
+                
+                    </div>
+
+
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                </div>
+
+
+            
+    {%endfor%}
+
+       
+
+{%endblock%}
+
+
+
+
