@@ -14,7 +14,10 @@
             Ime i Prezime: {{user.ime}} {{user.prezime}} <br>
             Username: {{ user.username }}<br>
             Email: {{ user.email}}<br>
-            Password : {{user.password}} <br>
+            Password : 
+            {%for sign in user.password%}
+                * 
+            {%endfor%}<br>
         </p>
     </div>
 </div>

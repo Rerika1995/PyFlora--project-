@@ -1,8 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-Post Details
-{% endblock %}
+Vaza{% endblock %}
 
 
 
@@ -19,7 +18,6 @@ Post Details
                     <section class="mb-5">
                         <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
 
-                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
 
                         <p class="fs-5 mb-4">
                             Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
@@ -127,6 +125,7 @@ Post Details
                             {%endif%}
 
 
+                            <img src="/static/{{vaza.biljka.slika}}" class="rounded mx-auto d-block" width ="360" alt="...">
 
 
 

@@ -33,7 +33,6 @@
                     <section class="mb-5">
                         <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
 
-                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
 
                         <p class="fs-5 mb-4">
                             Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
@@ -47,6 +46,9 @@
                         <p class="fs-5 mb-4">
                             Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}} 
                         </p>
+
+                        <img src="/static/{{vaza.biljka.slika}}" class="rounded mx-auto d-block" width ="360" alt="...">
+
                     </section>
         
         
@@ -65,7 +67,7 @@
                         Vaza je prazna
 
                     </p>
-                    <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+                    <img src="{{url_for('static', filename='prazna_vaza.jpg')}}" class="rounded mx-auto d-block" width ="360" alt="...">
 
                     <div>
                         <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">

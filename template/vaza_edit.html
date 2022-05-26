@@ -1,8 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-Post Details
-{% endblock %}
+Vaza{% endblock %}
 
 
 
@@ -20,7 +19,7 @@ Post Details
                     <section class="mb-5">
                         <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
 
-                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+
 
                         <p class="fs-5 mb-4">
                             Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
@@ -35,6 +34,9 @@ Post Details
                             Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}} 
                         </p>
 
+                        <img src="/static/{{vaza.biljka.slika}}" class="rounded mx-auto d-block" width ="360" alt="...">
+
+
 
                         <div>
                             <a class="btn btn-info" href="{{url_for('vaza_edit_senzor', vaza_id=vaza.id)}}">
@@ -46,12 +48,7 @@ Post Details
         
         
         
-        
-                    <div>
-                        <a class="btn btn-light" href="{{url_for('vaza_edit', vaza_id=vaza.id )}}">
-                            EDIT 
-                        </a>
-                    </div>
+    
     
                 {%else%}
 
@@ -60,7 +57,7 @@ Post Details
                         Vaza je prazna
 
                     </p>
-                    <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+                    <img src="{{url_for('static', filename='prazna_vaza.jpg')}}" class="img-thumbnail" width ="360" alt="...">
 
                 {%endif%}
         </article>
