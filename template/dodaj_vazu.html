@@ -18,6 +18,9 @@
 </li>
 
 <form method="POST">
+
+    <div class="card mb-4">
+
     {{form.hidden_tag()}}
     {{form.ime_vaze.label}}
     {{form.ime_vaze}}
@@ -27,6 +30,7 @@
 
     {{form.submit()}}
 
+    </div>
 </form>
 
 {%endblock%}

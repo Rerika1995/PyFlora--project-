@@ -1,9 +1,13 @@
 
-from flask import Flask, flash, redirect, session, render_template, url_for, jsonify
+from flask import Flask, flash, redirect, session, render_template, url_for, jsonify, request
 from flask_wtf import FlaskForm
+import os
 import json
+from importlib_metadata import files
 from sqlalchemy import true
 from wtforms import StringField, SubmitField, FloatField, IntegerField, PasswordField
+from flask_wtf.file import FileField
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
 from datetime import datetime 
@@ -15,12 +19,17 @@ from Repository.read_temp import get_temp
 
 #User = CreateUser("Sara", "Jones", "sara.jones@gmail.com", "SaraJones", "MojaLozinka12345")
 
+UPLOAD_FOLDER = 'static'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 app = Flask(__name__, template_folder='template')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/biljke.sqlite'
 app.config['SECRET_KEY'] = 'tajni_kljuc'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_TIMEOUT'] = 15
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 moment = Moment(app) #izradimo objek iz ove klase, objek koj ce nam omogucit azuriranje baze podataka, predamu mu app
 db = SQLAlchemy(app)
@@ -70,7 +79,7 @@ class Biljke (db.Model):
 
 class Form_za_biljke (FlaskForm):
     ime_biljke = StringField('Ime Biljke')
-    slika = StringField('Dodaj fotografiju') #kako dodam fotografij??
+    slika = FileField('Dodaj fotografiju') #kako dodam fotografij??
     max_svjetlost = FloatField('Maximalna količina svjetlosti')
     min_svjetlost = FloatField('Minimalna količina svjetlosti')
     max_ph = IntegerField('Maximalni pH')
@@ -239,9 +248,13 @@ def dodaj_biljku():
     form = Form_za_biljke ()
     if form.validate_on_submit():
         #kada/ako stisnemo submit na formu desi se ovo dolje:
+
+        slika = request.files['slika']
+        slika_filename = secure_filename(slika.filename)
+
         nova_biljka = Biljke(
         ime_biljke = form.ime_biljke.data,
-        slika = form.slika.data,
+        slika = slika_filename,
         max_svjetlost = form.max_svjetlost.data,
         min_svjetlost = form.min_svjetlost.data,
         max_ph = form.max_ph.data,
@@ -251,6 +264,11 @@ def dodaj_biljku():
         max_temp = form.max_temp.data,
         min_temp = form.min_temp.data
         )
+
+        #slika.save(os.path.join(app.config['/static/'], slika_filename))
+        slika.save(secure_filename(slika.filename))
+
+
     #napravila sam objekt biljku, pomocu klase koju sam izradila i uzimajuci podatke koje sam dobila iz form-a
 
         db.session.add(nova_biljka)
@@ -316,6 +334,21 @@ def biljka_get():
     return {'Status':'OK'}
 '''
 
+@app.route('/test/<biljka_id>', methods = ['GET' , 'POST'])
+def test(biljka_id):
+   print(biljka_id)
+   biljka=Biljke.query.get(biljka_id)
+   print(biljka)
+   print(biljka.ime_biljke)
+
+   form = Form_za_biljke()
+   
+   val = form.validate_on_submit()
+   print(val)
+
+
+   return render_template('proba_update.html', form = form)
+
 
 @app.route('/biljka_edit/<biljka_id>', methods = ['GET' , 'POST'])
 def biljka_edit(biljka_id):
@@ -325,6 +358,7 @@ def biljka_edit(biljka_id):
     print(biljka.id)
 
     form = Form_za_biljke()
+    print(form.validate_on_submit())
 
     if form.validate_on_submit():
         print(form.ime_biljke.data)
