@@ -1,7 +1,7 @@
 import random
 
 def sensor_data():
-    vlaznost = random.randint(30,70)
+    vlaznost = random.randint(20,70)
     ph = random.randint(2,13)
     light = random.randint(100,500)
 
