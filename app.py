@@ -84,10 +84,10 @@ class Form_za_biljke (FlaskForm):
     min_svjetlost = FloatField('Minimalna količina svjetlosti')
     max_ph = IntegerField('Maximalni pH')
     min_ph = IntegerField('Minimalni pH')
-    max_vlaznost = IntegerField('Maximalni pH')
-    min_vlaznost = IntegerField('Minimalni pH')
-    max_temp = FloatField('Maximalna količina svjetlosti')
-    min_temp = FloatField('Minimalna količina svjetlosti')
+    max_vlaznost = IntegerField('Maximaln % vlaznosti zemlje')
+    min_vlaznost = IntegerField('Minimalni % vlaznosti zemlje')
+    max_temp = FloatField('Maximalna tempratura')
+    min_temp = FloatField('Minimalna temperatura')
 
     submit = SubmitField('Dodaj novu biljku')
 
@@ -186,7 +186,7 @@ def logout():
 def index_senzor():
     res = Vaze.query.all()
     biljke = Biljke.query.all()
-    temp = 30
+    temp = get_temp()
     vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
     print(vlaznost)
     print(vlaznost, ph, light, temp)
@@ -266,7 +266,7 @@ def dodaj_biljku():
         )
 
         #slika.save(os.path.join(app.config['/static/'], slika_filename))
-        slika.save(secure_filename(slika.filename))
+        slika.save(secure_filename(slika.filename)) #Kako stavim da sprema u drugi folder tj u static?
 
 
     #napravila sam objekt biljku, pomocu klase koju sam izradila i uzimajuci podatke koje sam dobila iz form-a
@@ -274,6 +274,7 @@ def dodaj_biljku():
         db.session.add(nova_biljka)
         db.session.commit()
         flash('Nova biljka je uspješno dodana')
+        return redirect("/popis_biljki")
     #Tu sam dodala napravljen objekt i predala ga databazi kako bi ga upisala u databazu, jedan objekt = row podataka
     #Uz to i napravim neki flash message da korisnik zna da je uspjesno odradjeno
     #render_template('dodaj_biljku.html', form=form, Biljke = Biljke)
@@ -492,7 +493,7 @@ def delete_biljkaUVazi(vaza_id):
 @app.route ('/vaza_edit_senzor/<vaza_id>', methods = ['GET' , 'POST'])
 def vaza_edit_senzor(vaza_id):
     vaza=Vaze.query.get(vaza_id)
-    temp = 25
+    temp = get_temp()
     vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
 
 

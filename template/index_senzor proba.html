@@ -1,6 +1,6 @@
 {%extends 'layout.html'%}
 
-{%block title%} Vaze {%endblock%}
+{%block title%} Vaze - synced {%endblock%}
 
 {%block content%}
 
@@ -9,7 +9,7 @@
 
     <div>
         <a class="btn btn-info" href="{{ url_for('index_senzor') }}">
-            SYNC
+            SYNC AGAIN
         </a>
         <a class="btn btn-info" href="{{ url_for('dodaj_vazu') }}">
             DODAJ NOVU VAZU
@@ -86,18 +86,6 @@
         {%endfor%}
     
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
