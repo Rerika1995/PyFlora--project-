@@ -1,0 +1,27 @@
+{% extends 'layout.html'%}
+
+{%block title%} Moj Profil {%endblock%}
+
+
+{%block content%}
+
+
+<form method="POST">
+    {{form.hidden_tag()}}
+    <!-- Email input -->
+    <div class="form-outline mb-4">
+        {{form.username}}
+        {{form.username.label}}
+    </div>
+  
+    <!-- Password input -->
+    <div class="form-outline mb-4">
+
+        {{form.password}}
+        {{form.password.label}}
+    </div>
+        {{form.submit()}}
+</form>
+
+
+{%endblock%}

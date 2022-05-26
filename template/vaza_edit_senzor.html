@@ -1,0 +1,195 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Post Details
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Post content-->
+        <article>
+            <h2 class="card-title">{{ vaza.ime_vaze }}</h2>
+
+                {%if vaza.id_biljke != None%}
+
+                    <section class="mb-5">
+                        <h2 class="card-title">{{ vaza.biljka.ime_biljke }}</h2>
+
+                        <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+
+                        <p class="fs-5 mb-4">
+                            Vlažnost zemlje: {{ vaza.biljka.max_vlaznost}} - {{ vaza.biljka.min_vlaznost}} %
+                        </p>
+
+
+
+                            {%if vaza.biljka.max_vlaznost < vlaznost:%}  
+                                <p class="card-text">
+                                    {{vlaznost}} % VLAŽNOST : biljka ima previše vode!
+                                </p>
+            
+                            {%elif vaza.biljka.min_vlaznost > vlaznost: %} 
+                                <p class="card-text">
+                                    {{vlaznost}} % VLAŽNOST : Biljka je zalivena! 
+                                </p>
+                            {%else:%}
+                                <p class="card-text">
+                                    Nema promjene 
+                                </p>
+                    
+                            {%endif%}
+
+
+
+
+
+
+                        <p class="fs-5 mb-4">
+                            Temperatura: {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                        </p>
+
+
+                            {%if vaza.biljka.max_temp < temp:%}  
+                            <p class="card-text">
+                                {{temp}} celsius - Temperatura pre visoka : Pomaknite biljku na hladnije mjesto , optimalna temperatura za biljku je  {{ vaza.biljka.max_temp}} - {{ vaza.biljka.min_temp}}
+                            </p>
+                
+                            {%elif vaza.biljka.min_temp > temp: %} 
+                                <p class="card-text">
+                                    {{temp}}celsius - Temperatura pre niska : Uključivanje grijanja!
+                                </p>
+                            {%else:%}
+
+                                <p class="card-text">
+                                    sve okej, nema promjene
+                                </p>
+                                
+                
+                            {%endif%}
+
+
+
+
+
+
+
+
+
+
+                        <p class="fs-5 mb-4">
+                            pH = {{ vaza.biljka.max_ph}} - {{ vaza.biljka.min_ph}}
+                        </p>
+
+
+                            {%if vaza.biljka.max_ph < ph:%}  
+                                <p class="card-text">
+                                    {{ph}} - pH pre visok: Substrati su dodani!
+                                </p>
+            
+                            {%elif vaza.biljka.min_ph > ph: %} 
+                                <p class="card-text">
+                                    {{ph}} - pH pre nizak : Substrati su dodani!
+                                </p>
+                            {%else:%}
+                                <p class="card-text">
+                                    Sve okej, nema promjene
+                                </p>
+                        
+                            {%endif%}
+
+
+
+
+
+                        <p class="fs-5 mb-4">
+                            Svjetlost : {{ vaza.biljka.max_svjetlost}} - {{ vaza.biljka.min_svjetlost}} 
+                        </p>
+
+
+                            {%if vaza.biljka.max_svjetlost < light:%}  
+                                <p class="card-text">
+                                    SVJETLOST:  Biljka ima previše svjetlosti, premjestite ju!
+                                </p>
+            
+                            {%elif vaza.biljka.min_svjetlost > light: %} 
+                                <p class="card-text">
+                                    SVJETLOST:  Biljka ima pre malo svjetlosti, premjestite ju na svjetlije područje!
+                                </p>
+                            {%else:%}
+                                <p class="card-text">
+                                    Sve okej, nema promjene
+                                </p>
+                            
+                            {%endif%}
+
+
+
+
+
+
+
+
+                        <div>
+                            <a class="btn btn-info" href="{{url_for('vaza_edit_senzor', vaza_id=vaza.id)}}">
+                                SYNC
+                            </a>
+                        </div>
+                        
+                    </section>
+        
+        
+        
+    
+    
+                {%else%}
+
+                <section class="mb-5">
+                    <p class="fs-5 mb-4">
+                        Vaza je prazna
+
+                    </p>
+                    <img src="{{ vaza.biljka.slika }}" class="card-img-top" alt="...">
+
+                {%endif%}
+        </article>
+        <!-- Comments section-->
+        <section class="mb-5">
+            <div class="card bg-light">
+                <div class="card-body">
+
+
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- Side widgets-->
+    <div class="col-lg-4">
+        <!-- Search widget-->
+        <div class="card mb-4">
+            <div class="card-header">IZBRIŠI VAZU</div>
+            <div class="container">
+
+
+                <div>
+                    <a class="btn btn-info" href="{{url_for('delete_vaza', vaza_id=vaza.id)}}">
+                        IZBRIŠI VAZU
+                    </a>
+                    <a class="btn btn-info" href="{{url_for('delete_biljkaUVazi', vaza_id=vaza.id)}}">
+                        MAKNI BILJKU IZ VAZE
+                    </a>
+                </div>
+                </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+{% endblock %}

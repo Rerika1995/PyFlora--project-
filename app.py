@@ -8,7 +8,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
 from datetime import datetime 
 from flask_migrate import Migrate
+from flask_login import login_user, LoginManager, login_required,logout_user, current_user, UserMixin
 from Repository.data_creator import sensor_data
+from Repository.read_temp import get_temp
 #from Repository.user import CreateUser
 
 #User = CreateUser("Sara", "Jones", "sara.jones@gmail.com", "SaraJones", "MojaLozinka12345")
@@ -24,13 +26,20 @@ moment = Moment(app) #izradimo objek iz ove klase, objek koj ce nam omogucit azu
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
+#flask Login configuration 
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 #region Class
 
-class User (db.Model):
+class User (db.Model, UserMixin):
     __tablename__ = 'User'
     id = db.Column(db.Integer(), primary_key = True )
     ime = db.Column(db.String(50), nullable = False)
@@ -74,6 +83,10 @@ class Form_za_biljke (FlaskForm):
     submit = SubmitField('Dodaj novu biljku')
 
 
+
+
+
+
 class Vaze (db.Model):
     __tablename__ = 'Vaze'
     id = db.Column(db.Integer(), primary_key = True )
@@ -99,6 +112,12 @@ class Profil (FlaskForm):
     submit = SubmitField('Promjenite svoje podatke')
 
 
+class Login_form (FlaskForm):
+    username = StringField('Username')
+    password = PasswordField('Password')
+
+    submit = SubmitField('Promjenite svoje podatke')
+
 class Biljka_u_vazu (FlaskForm):
     pass
 
@@ -113,12 +132,11 @@ db.create_all()
 
 #region rute
 
-'''@app.login('')
-def login():
-    pass
-'''
+
+
 
 @app.route('/', methods = ['GET'])
+@login_required
 def index():
     res = Vaze.query.all()
     print("[VAZE GET RES] ", res)
@@ -126,8 +144,36 @@ def index():
     return render_template('index.html', Vaze = res , vaza_id=vaza_id)
 
 
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    form = Login_form()
+    user = User.query.get(1)
 
-@app.route('/ucitaj_senzor', methods = ['GET', 'POST'])
+    if form.validate_on_submit():
+        if user.username == form.username.data and user.password == form.password.data:
+            print('correct')
+            login_user(user)
+            return redirect("/")
+
+        else:
+            print('wrong data')
+            flash('Wrong data, try again')
+
+    return render_template('login.html', form=form) 
+
+
+@app.route('/logout', methods = ['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    flash('You are logged out!')
+
+    return redirect('/login')    
+
+
+
+
+@app.route('/index_senzor', methods = ['GET', 'POST'])
 def index_senzor():
     res = Vaze.query.all()
     biljke = Biljke.query.all()
@@ -139,6 +185,7 @@ def index_senzor():
     return render_template('index_senzor.html', vaze = res, biljke = biljke, vlaznost = vlaznost, ph = ph, light = light, temp = temp)
 
 @app.route('/profil', methods = ['GET' , 'POST']) 
+@login_required
 def profil():
     user=User.query.get(1)
 
@@ -272,10 +319,10 @@ def biljka_get():
 
 @app.route('/biljka_edit/<biljka_id>', methods = ['GET' , 'POST'])
 def biljka_edit(biljka_id):
-    biljka = Biljke.query.get(biljka_id)
-    #biljka_id = biljka.id
-    print(biljka.ime_biljke)
-    print(biljka.max_svjetlost)
+    print(biljka_id)
+    biljka = Biljke.query.filter_by(id=biljka_id).first()
+    print(biljka)
+    print(biljka.id)
 
     form = Form_za_biljke()
 
@@ -289,7 +336,6 @@ def biljka_edit(biljka_id):
         else:
             biljka.ime_biljke = form.ime_biljke.data
             print(biljka.ime_biljke)
-
 
         if form.slika.data == "":
             print('no changes')
@@ -344,12 +390,9 @@ def biljka_edit(biljka_id):
         #MOGU LI OVO IKAKO NAPISATI U FOR PETLJI, KAZE DA NIJE ITERABILE
         print(biljka.ime_biljke)
         db.session.commit()
-        flash('Biljka je izmjenjena')
 
-#POSTOJI LI NEKI MODUL KOJI MI DA BUTTON KOJI KLIKNEM I DA SE NESTO DESI 
-    
 
-    return render_template('biljka_edit.html', biljka = biljka, form=form , biljka_id=biljka_id)
+    return render_template('biljka_edit.html', biljka = biljka, biljka_id=biljka_id , form = form)
 
 
 @app.route ('/delete_biljka/<biljka_id>', methods = ['GET' , 'POST'])
@@ -415,8 +458,9 @@ def delete_biljkaUVazi(vaza_id):
 @app.route ('/vaza_edit_senzor/<vaza_id>', methods = ['GET' , 'POST'])
 def vaza_edit_senzor(vaza_id):
     vaza=Vaze.query.get(vaza_id)
-    temp = 30
+    temp = 25
     vlaznost, ph, light= sensor_data() #kako sada napunim te varjable koje cu koristit?
+
 
     return render_template ('vaza_edit_senzor.html', vaza = vaza, temp = temp , vlaznost = vlaznost , ph=ph , light = light, vaza_id = vaza_id)
 
