@@ -191,7 +191,7 @@ def index_senzor():
     print(vlaznost)
     print(vlaznost, ph, light, temp)
 
-    return render_template('index_senzor.html', vaze = res, biljke = biljke, vlaznost = vlaznost, ph = ph, light = light, temp = temp)
+    return render_template('index_senzor.html', Vaze = res, biljke = biljke, vlaznost = vlaznost, ph = ph, light = light, temp = temp)
 
 @app.route('/profil', methods = ['GET' , 'POST']) 
 @login_required
@@ -265,7 +265,7 @@ def dodaj_biljku():
         min_temp = form.min_temp.data
         )
 
-        #slika.save(os.path.join(app.config['/static/'], slika_filename))
+        #slika.save(os.path.join(['/static/'], slika_filename)) #os path, absolute path + u naodnicima static 
         slika.save(secure_filename(slika.filename)) #Kako stavim da sprema u drugi folder tj u static?
 
 
